@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HappyMapper — Projection Mapping for iPhone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0600;
+  --gold: #FBB924;
+  --orange: #D97706;
+  --red: #DC2626;
+  --cream: #FFF8ED;
+  --muted: rgba(255,248,237,0.45);
+  --card: rgba(255,255,255,0.04);
+  --border: rgba(251,185,36,0.15);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+
+html{scroll-behavior:smooth;}
+
+body{
+  background:var(--bg);
+  color:var(--cream);
+  font-family:'DM Sans',sans-serif;
+  font-size:16px;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+
+/* grid bg */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(251,185,36,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(251,185,36,.04) 1px, transparent 1px);
+  background-size:32px 32px;
+  pointer-events:none;
+  z-index:0;
+}
+
+section{position:relative;z-index:1;}
+
+/* hero video bg */
+.hero-video-wrap{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+}
+
+.hero-video-wrap video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:0.38;
+}
+
+.hero-video-wrap::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(to bottom, rgba(10,6,0,0.6) 0%, rgba(10,6,0,0.15) 35%, rgba(10,6,0,0.15) 65%, rgba(10,6,0,0.98) 100%),
+    linear-gradient(to right, rgba(10,6,0,0.4) 0%, transparent 40%, transparent 60%, rgba(10,6,0,0.4) 100%);
+}
+
+/* NAV */
+nav{
+  position:fixed;
+  top:0;left:0;right:0;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:18px 48px;
+  background:rgba(10,6,0,0.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+
+.nav-logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  text-decoration:none;
+}
+
+.nav-logo img{
+  width:32px;height:32px;border-radius:8px;
+}
+
+.nav-logo span{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:22px;
+  letter-spacing:1px;
+  color:var(--cream);
+}
+
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:32px;
+}
+
+.nav-links a{
+  color:var(--muted);
+  text-decoration:none;
+  font-size:14px;
+  font-weight:400;
+  transition:color .2s;
+}
+
+.nav-links a:hover{color:var(--cream);}
+
+.nav-cta{
+  background:linear-gradient(135deg, var(--orange), var(--gold));
+  color:#1a0800 !important;
+  font-weight:500 !important;
+  padding:8px 20px;
+  border-radius:20px;
+  text-decoration:none;
+  font-size:14px;
+  transition:opacity .2s;
+}
+
+.nav-cta:hover{opacity:.85;}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:120px 24px 80px;
+  position:relative;
+  overflow:hidden;
+}
+
+.hero-halo{
+  position:absolute;
+  left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  width:700px;height:500px;
+  background:radial-gradient(ellipse, rgba(251,185,36,.18) 0%, rgba(217,119,6,.08) 40%, transparent 70%);
+  border-radius:50%;
+  pointer-events:none;
+  z-index:1;
+}
+
+.hero-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(251,185,36,.1);
+  border:1px solid rgba(251,185,36,.25);
+  border-radius:20px;
+  padding:6px 16px;
+  font-size:12px;
+  font-weight:500;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:32px;
+  position:relative;
+  z-index:2;
+}
+
+.hero-badge::before{
+  content:'';
+  width:6px;height:6px;
+  background:var(--gold);
+  border-radius:50%;
+  animation:pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse{
+  0%,100%{opacity:1;}
+  50%{opacity:.3;}
+}
+
+.hero h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(64px, 12vw, 130px);
+  line-height:.95;
+  letter-spacing:2px;
+  color:var(--cream);
+  margin-bottom:12px;
+  position:relative;
+  z-index:2;
+}
+
+.hero h1 em{
+  font-style:normal;
+  background:linear-gradient(135deg, var(--orange), var(--gold));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+.hero-sub{
+  font-size:18px;
+  font-weight:300;
+  color:var(--muted);
+  max-width:520px;
+  margin:0 auto 48px;
+  line-height:1.6;
+  position:relative;
+  z-index:2;
+}
+
+.hero-actions{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:80px;
+  flex-wrap:wrap;
+  justify-content:center;
+  position:relative;
+  z-index:2;
+}
+
+.btn-primary{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:linear-gradient(135deg, var(--orange), var(--gold));
+  color:#1a0800;
+  font-weight:500;
+  font-size:15px;
+  padding:14px 28px;
+  border-radius:28px;
+  text-decoration:none;
+  transition:transform .2s, opacity .2s;
+}
+
+.btn-primary:hover{transform:translateY(-2px);opacity:.9;}
+
+.btn-secondary{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.15);
+  color:var(--cream);
+  font-weight:400;
+  font-size:15px;
+  padding:14px 28px;
+  border-radius:28px;
+  text-decoration:none;
+  transition:background .2s;
+}
+
+.btn-secondary:hover{background:rgba(255,255,255,.12);}
+
+/* phone mockup */
+.hero-phone{
+  position:relative;
+  display:inline-block;
+  z-index:2;
+}
+
+.phone-frame{
+  width:260px;
+  border-radius:40px;
+  border:2px solid rgba(255,255,255,.15);
+  overflow:hidden;
+  box-shadow:0 40px 120px rgba(0,0,0,.8), 0 0 60px rgba(251,185,36,.08);
+}
+
+.phone-frame img{
+  width:100%;
+  display:block;
+}
+
+.phone-glow{
+  position:absolute;
+  inset:-30px;
+  background:radial-gradient(ellipse, rgba(251,185,36,.12) 0%, transparent 65%);
+  pointer-events:none;
+  border-radius:50%;
+}
+
+/* SECTION COMMON */
+.section-label{
+  font-size:11px;
+  font-weight:500;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:16px;
+}
+
+/* FEATURES STRIP */
+.features-strip{
+  padding:40px 48px;
+  display:flex;
+  align-items:center;
+  gap:0;
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  overflow:hidden;
+}
+
+.strip-item{
+  flex:1;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:0 32px;
+  border-right:1px solid var(--border);
+  font-size:14px;
+  color:var(--muted);
+  white-space:nowrap;
+}
+
+.strip-item:last-child{border-right:none;}
+
+.strip-dot{
+  width:8px;height:8px;
+  background:var(--gold);
+  border-radius:50%;
+  flex-shrink:0;
+  opacity:.6;
+}
+
+/* FEATURE SECTIONS */
+.feature-section{
+  padding:100px 48px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:80px;
+  align-items:center;
+  max-width:1100px;
+  margin:0 auto;
+}
+
+.feature-section.reverse{direction:rtl;}
+.feature-section.reverse > *{direction:ltr;}
+
+.feature-text .section-label{margin-bottom:16px;}
+
+.feature-text h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(42px, 6vw, 68px);
+  line-height:1;
+  letter-spacing:1px;
+  color:var(--cream);
+  margin-bottom:20px;
+}
+
+.feature-text h2 em{
+  font-style:normal;
+  color:var(--gold);
+}
+
+.feature-text p{
+  font-size:16px;
+  font-weight:300;
+  color:var(--muted);
+  line-height:1.75;
+  max-width:420px;
+}
+
+.feature-visual{
+  position:relative;
+  display:flex;
+  justify-content:center;
+}
+
+.feature-phone{
+  width:220px;
+  border-radius:36px;
+  border:1.5px solid rgba(255,255,255,.12);
+  overflow:hidden;
+  box-shadow:0 30px 80px rgba(0,0,0,.7), 0 0 40px rgba(251,185,36,.06);
+}
+
+.feature-phone img{width:100%;display:block;}
+
+.feature-glow{
+  position:absolute;
+  inset:-40px;
+  background:radial-gradient(ellipse, rgba(251,185,36,.1) 0%, transparent 65%);
+  border-radius:50%;
+  pointer-events:none;
+}
+
+/* landscape screenshot */
+.landscape-section{
+  padding:80px 48px;
+  text-align:center;
+}
+
+.landscape-section h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(42px, 6vw, 72px);
+  letter-spacing:1px;
+  color:var(--cream);
+  margin-bottom:12px;
+}
+
+.landscape-section p{
+  color:var(--muted);
+  font-size:16px;
+  font-weight:300;
+  margin-bottom:48px;
+}
+
+.landscape-img{
+  width:100%;
+  max-width:900px;
+  margin:0 auto;
+  display:block;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 40px 100px rgba(0,0,0,.8);
+}
+
+/* 3 step */
+.steps-section{
+  padding:100px 48px;
+  max-width:1100px;
+  margin:0 auto;
+}
+
+.steps-section h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(48px, 7vw, 80px);
+  letter-spacing:1px;
+  color:var(--cream);
+  margin-bottom:60px;
+  text-align:center;
+}
+
+.steps-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:24px;
+}
+
+.step-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:32px;
+  position:relative;
+}
+
+.step-num{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:64px;
+  line-height:1;
+  color:rgba(251,185,36,.15);
+  margin-bottom:16px;
+}
+
+.step-title{
+  font-size:18px;
+  font-weight:500;
+  color:var(--cream);
+  margin-bottom:8px;
+}
+
+.step-sub{
+  font-size:14px;
+  font-weight:300;
+  color:var(--muted);
+  line-height:1.65;
+}
+
+/* PRICING */
+.pricing-section{
+  padding:100px 48px;
+  text-align:center;
+  max-width:800px;
+  margin:0 auto;
+}
+
+.pricing-section h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(48px, 7vw, 80px);
+  letter-spacing:1px;
+  line-height:1;
+  color:var(--cream);
+  margin-bottom:16px;
+}
+
+.pricing-section > p{
+  color:var(--muted);
+  margin-bottom:56px;
+  font-weight:300;
+}
+
+.pricing-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  text-align:left;
+}
+
+.price-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:28px;
+}
+
+.price-card.featured{
+  border-color:rgba(251,185,36,.4);
+  background:rgba(251,185,36,.06);
+}
+
+.price-tier{
+  font-size:11px;
+  font-weight:500;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:12px;
+}
+
+.price-amount{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:52px;
+  line-height:1;
+  color:var(--cream);
+  margin-bottom:4px;
+}
+
+.price-amount span{
+  font-family:'DM Sans',sans-serif;
+  font-size:16px;
+  font-weight:300;
+  color:var(--muted);
+}
+
+.price-note{
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:24px;
+  font-weight:300;
+}
+
+.price-tag{
+  display:inline-block;
+  background:rgba(251,185,36,.15);
+  border:1px solid rgba(251,185,36,.3);
+  color:var(--gold);
+  font-size:10px;
+  font-weight:500;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  padding:3px 10px;
+  border-radius:10px;
+  margin-bottom:12px;
+}
+
+/* FOOTER */
+footer{
+  padding:60px 48px 40px;
+  border-top:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:24px;
+}
+
+.footer-logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  text-decoration:none;
+}
+
+.footer-logo span{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:20px;
+  letter-spacing:1px;
+  color:var(--cream);
+}
+
+.footer-links{
+  display:flex;
+  gap:24px;
+}
+
+.footer-links a{
+  font-size:13px;
+  color:var(--muted);
+  text-decoration:none;
+  transition:color .2s;
+}
+
+.footer-links a:hover{color:var(--cream);}
+
+.footer-copy{
+  font-size:12px;
+  color:rgba(255,255,255,.2);
+}
+
+/* scroll reveal */
+.reveal{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity .7s ease, transform .7s ease;
+}
+
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* responsive */
+@media(max-width:768px){
+  nav{padding:16px 24px;}
+  .nav-links{display:none;}
+  .hero{padding:100px 24px 60px;}
+  .features-strip{flex-direction:column;padding:32px 24px;gap:20px;}
+  .strip-item{border-right:none;border-bottom:1px solid var(--border);padding:0 0 20px;width:100%;}
+  .strip-item:last-child{border-bottom:none;}
+  .feature-section{grid-template-columns:1fr;gap:40px;padding:60px 24px;}
+  .feature-section.reverse{direction:ltr;}
+  .steps-grid{grid-template-columns:1fr;}
+  .pricing-grid{grid-template-columns:1fr;}
+  .steps-section,.pricing-section{padding:60px 24px;}
+  .landscape-section{padding:60px 24px;}
+  footer{padding:40px 24px 32px;flex-direction:column;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <span>HappyMapper</span>
+  </a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="privacy-policy.html">Privacy</a>
+    <a href="https://apps.apple.com" class="nav-cta">Download</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-video-wrap">
+    <video autoplay loop muted playsinline>
+      <source src="hero.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-halo"></div>
+  <div class="hero-badge">Now available on iPhone</div>
+  <h1>Your space is<br>the <em>canvas.</em></h1>
+  <p class="hero-sub">Map video and light onto any wall, object, or surface — from your iPhone. No laptop. No software. Just point, shape, and project.</p>
+  <div class="hero-actions">
+    <a href="https://apps.apple.com" class="btn-primary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      Download on App Store
+    </a>
+    <a href="#features" class="btn-secondary">See features ↓</a>
+  </div>
+  <div class="hero-phone">
+    <div class="phone-glow"></div>
+    <div class="phone-frame">
+      <img src="screen_home.png" alt="HappyMapper home screen">
+    </div>
+  </div>
+</section>
+
+<!-- STRIP -->
+<div class="features-strip">
+  <div class="strip-item"><div class="strip-dot"></div>Millions of free videos built in</div>
+  <div class="strip-item"><div class="strip-dot"></div>Curved edges for any surface</div>
+  <div class="strip-item"><div class="strip-dot"></div>Cutout mode — light only where you want</div>
+  <div class="strip-item"><div class="strip-dot"></div>Export for USB — no phone needed</div>
+</div>
+
+<!-- FEATURE: SEARCH -->
+<section id="features">
+  <div class="feature-section reveal">
+    <div class="feature-text">
+      <div class="section-label">· Media</div>
+      <h2>Millions of<br>videos and<br><em>GIFs.</em></h2>
+      <p>Search Pexels, Pixabay and Giphy without leaving the app. Fire, water, neon, abstract, cartoons — whatever vibe you're going for, it's already here.</p>
+    </div>
+    <div class="feature-visual">
+      <div class="feature-glow"></div>
+      <div class="feature-phone">
+        <img src="screen_search.png" alt="HappyMapper media search">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE: BLEND -->
+<section>
+  <div class="feature-section reverse reveal">
+    <div class="feature-text">
+      <div class="section-label">· Blend</div>
+      <h2>Merge<br>surfaces<br><em>into one.</em></h2>
+      <p>Select multiple shapes and blend them together for seamless mapped installations that flow across any surface — walls, furniture, floors, all connected.</p>
+    </div>
+    <div class="feature-visual">
+      <div class="feature-glow"></div>
+      <div class="feature-phone">
+        <img src="screen_blend.png" alt="HappyMapper blend mode">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE: CUTOUT -->
+<section>
+  <div class="feature-section reveal">
+    <div class="feature-text">
+      <div class="section-label">· Cutout</div>
+      <h2>Light where<br>you want it.<br><em>Dark where</em><br><em>you don't.</em></h2>
+      <p>Cutout mode erases light from any shape — so projection only hits exactly where you want it. Your couch stays dark. Your wall glows.</p>
+    </div>
+    <div class="feature-visual">
+      <div class="feature-glow"></div>
+      <div class="feature-phone">
+        <img src="screen_cutout.png" alt="HappyMapper cutout mode">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE: EXPORT -->
+<section>
+  <div class="feature-section reverse reveal">
+    <div class="feature-text">
+      <div class="section-label">· Export</div>
+      <h2>No phone<br><em>needed.</em></h2>
+      <p>Export your mapping as a looping video file. Load it onto a USB stick, Fire Stick, or any media player and walk away. Your installation runs itself.</p>
+    </div>
+    <div class="feature-visual">
+      <div class="feature-glow"></div>
+      <div class="feature-phone">
+        <img src="screen_export.png" alt="HappyMapper export canvas">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LANDSCAPE -->
+<section class="landscape-section reveal">
+  <div class="section-label" style="text-align:center;">· Built for the room</div>
+  <h2>The studio fits in your hand.</h2>
+  <p>Full landscape editor with floating toolbar. Stage shows, gallery installs, living rooms.</p>
+  <img src="screen_landscape.png" alt="HappyMapper landscape editor" class="landscape-img">
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="steps-section">
+  <div class="section-label" style="text-align:center;margin-bottom:16px;">· From zero to projecting</div>
+  <h2>Three steps. One minute.</h2>
+  <div class="steps-grid">
+    <div class="step-card reveal">
+      <div class="step-num">01</div>
+      <div class="step-title">Open &amp; connect</div>
+      <div class="step-sub">Plug your iPhone into a projector via HDMI adapter. HappyMapper detects the display automatically.</div>
+    </div>
+    <div class="step-card reveal" style="transition-delay:.1s;">
+      <div class="step-num">02</div>
+      <div class="step-title">Drop a shape, drag corners</div>
+      <div class="step-sub">Draw shapes on your canvas and drag the corners to match whatever surface is in front of you.</div>
+    </div>
+    <div class="step-card reveal" style="transition-delay:.2s;">
+      <div class="step-num">03</div>
+      <div class="step-title">Add media. Enjoy the show.</div>
+      <div class="step-sub">Search millions of free videos, browse GIFs, or use your own content. Tap to assign, watch it come alive.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="pricing-section">
+  <div class="section-label">· Pricing</div>
+  <h2>Start free.<br>Upgrade anytime.</h2>
+  <p>One shape is free forever — every feature included. Upgrade for unlimited shapes.</p>
+  <div class="pricing-grid">
+    <div class="price-card reveal">
+      <div class="price-tier">Monthly</div>
+      <div class="price-amount">$2<span>.99/mo</span></div>
+      <div class="price-note">3-day free trial included.</div>
+      <p style="font-size:14px;color:var(--muted);font-weight:300;line-height:1.6;">Unlimited shapes. Map entire rooms, layer surfaces, build complex installations.</p>
+    </div>
+    <div class="price-card reveal" style="transition-delay:.1s;">
+      <div class="price-tier">Yearly</div>
+      <div class="price-amount">$24<span>.99/yr</span></div>
+      <div class="price-note">Save ~30% vs monthly.</div>
+      <p style="font-size:14px;color:var(--muted);font-weight:300;line-height:1.6;">Unlimited shapes all year. Best value for regular use.</p>
+    </div>
+    <div class="price-card featured reveal" style="transition-delay:.2s;">
+      <div class="price-tag">Intro offer</div>
+      <div class="price-tier">Lifetime</div>
+      <div class="price-amount">$50</div>
+      <div class="price-note">One-time. Yours forever.</div>
+      <p style="font-size:14px;color:var(--muted);font-weight:300;line-height:1.6;">Pay once and own it. Price goes up after launch.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="footer-logo">
+    <span>HappyMapper</span>
+  </a>
+  <div class="footer-links">
+    <a href="privacy-policy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Use</a>
+    <a href="mailto:djklu31@gmail.com">Support</a>
+  </div>
+  <div class="footer-copy">© 2025 Kenny Lu</div>
+</footer>
+
+<script>
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, {threshold: 0.12});
+reveals.forEach(r => observer.observe(r));
+</script>
+
+</body>
+</html>
