@@ -377,6 +377,7 @@ nav{
 
 .phone-frame{
   width:min(540px, 88vw);
+  background-color:black;
   border-radius:30px;
   border:1.5px solid rgba(255,255,255,.18);
   overflow:hidden;
@@ -501,6 +502,8 @@ nav{
 .landscape-section p{color:var(--muted);font-size:16px;font-weight:300;margin-bottom:48px;}
 .landscape-img{
   width:100%;max-width:960px;margin:0 auto;display:block;
+  padding-top:22px;
+  background-color:black;
   border-radius:18px;
   border:1px solid rgba(255,255,255,.1);
   box-shadow:0 50px 120px rgba(0,0,0,.85), 0 0 60px rgba(251,185,36,.08);
@@ -799,7 +802,6 @@ nav{
   position:relative;box-shadow:0 30px 70px rgba(0,0,0,.5);
   transition:transform .4s cubic-bezier(.16,1,.3,1), box-shadow .4s, border-color .4s;
 }
-.gallery-shot:hover{transform:translateY(-6px);border-color:rgba(251,185,36,.35);box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 40px rgba(251,185,36,.08);}
 .gallery-shot img{width:100%;display:block;}
 .gallery-cap{
   padding:16px 4px 0;text-align:left;
@@ -807,6 +809,15 @@ nav{
   letter-spacing:.3px;color:var(--muted);
 }
 .gallery-cap b{color:var(--cream);font-weight:600;}
+
+/* image gallery as a carousel: static 3-up on desktop, swipeable 1-up on mobile */
+.gallery-carousel{position:relative;margin:0 auto 96px;}
+.gallery-carousel .vc-viewport{overflow:hidden;touch-action:pan-y;}
+.gallery-carousel .vc-track{gap:20px;}
+.gallery-carousel .vc-track .gallery-shot{flex:0 0 calc((100% - 40px) / 3);min-width:0;}
+.gallery-carousel .gallery-shot img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;pointer-events:none;}
+.gallery-carousel .vc-arrow{top:50%;transform:translateY(-50%);}
+.gallery-carousel .vc-arrow:hover{transform:translateY(-50%);}
 
 .gallery-videos h3{
   font-family:'Inter',sans-serif;font-weight:800;font-size:clamp(26px,3.6vw,36px);
@@ -1019,7 +1030,8 @@ footer{
   .steps-section h2{margin-bottom:40px;}
   .steps-grid{grid-template-columns:1fr;gap:16px;}
   .step-card{padding:30px 28px;}
-  .step-icon{transform:scale(1.2);margin-top:16px;}
+  .step-icon{margin-top:24px;transform:none;}
+  .step-icon svg{width:min(150px,38vw);height:auto;}
 
   /* PRICING */
   .pricing-section{padding:64px 24px;}
@@ -1041,7 +1053,9 @@ footer{
   .gallery-section{padding:64px 0;}
   .gallery-inner{padding:0 22px;}
   .gallery-section .gallery-intro{margin-bottom:40px;}
-  .gallery-grid{grid-template-columns:1fr;gap:24px;margin-bottom:72px;max-width:380px;margin-left:auto;margin-right:auto;}
+  .gallery-carousel{max-width:340px;margin:0 auto 72px;}
+  .gallery-carousel .vc-track{gap:0;}
+  .gallery-carousel .vc-track .gallery-shot{flex:0 0 100%;}
   .video-carousel{max-width:320px;padding:0;margin:0 auto;}
   .vc-track{gap:0;}
   .vc-track .video-card{flex:0 0 100%;}
@@ -1091,8 +1105,8 @@ footer{
 
 <!-- HERO -->
 <section class="hero">
-  <video class="hero-video" autoplay muted loop playsinline poster="">
-    <source src="hero.mp4" type="video/mp4">
+  <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="gallery/room-promo.jpg">
+    <source src="uploads/hero.mp4" type="video/mp4">
   </video>
   <div class="hero-overlay"></div>
   <div class="hero-badge">Now available on iPhone</div>
@@ -1289,16 +1303,23 @@ footer{
     <h2>From bare surface<br>to <em>living light.</em></h2>
     <p class="gallery-intro">Real rooms, real projectors, no editing tricks. Here is what HappyMapper does to an ordinary surface once the light hits it.</p>
 
-    <div class="gallery-grid">
-      <figure class="gallery-shot">
-        <img src="gallery/stairs-ba.jpg" alt="Spiral staircase before and after projection mapping" loading="lazy">
-      </figure>
-      <figure class="gallery-shot">
-        <img src="gallery/room-promo.jpg" alt="Projection mapping for iPhone and iPad — the editor and a finished mapped staircase" loading="lazy">
-      </figure>
-      <figure class="gallery-shot">
-        <img src="gallery/door-ba.jpg" alt="Entry door before and after projection mapping" loading="lazy">
-      </figure>
+    <div class="gallery-carousel" data-visible="3">
+      <button class="vc-arrow vc-prev" type="button" aria-label="Previous photos">&lsaquo;</button>
+      <div class="vc-viewport">
+        <div class="vc-track">
+          <figure class="gallery-shot">
+            <img src="gallery/stairs-ba.jpg" alt="Spiral staircase before and after projection mapping" loading="lazy">
+          </figure>
+          <figure class="gallery-shot">
+            <img src="gallery/room-promo.jpg" alt="Projection mapping for iPhone and iPad — the editor and a finished mapped staircase" loading="lazy">
+          </figure>
+          <figure class="gallery-shot">
+            <img src="gallery/door-ba.jpg" alt="Entry door before and after projection mapping" loading="lazy">
+          </figure>
+        </div>
+      </div>
+      <button class="vc-arrow vc-next" type="button" aria-label="More photos">&rsaquo;</button>
+      <div class="vc-dots" aria-hidden="true"></div>
     </div>
 
     <div class="gallery-videos">
@@ -1462,7 +1483,7 @@ footer{
     <div class="footer-links">
     <a href="privacy-policy.html">Privacy Policy</a>
     <a href="terms.html">Terms of Use</a>
-    <a href="/cdn-cgi/l/email-protection#b1d5dbdaddc48280f1d6dcd0d8dd9fd2dedc">Support</a>
+    <a href="/cdn-cgi/l/email-protection#127678797e67212352757f737b7e3c717d7f">Support</a>
   </div>
     <div class="footer-actions">
     <a href="https://www.instagram.com/happymapper.live" target="_blank" rel="noopener" class="footer-social" aria-label="Instagram">
@@ -1626,11 +1647,29 @@ window.addEventListener('resize', () => {
     };
     el.addEventListener('click', play);
     el.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); play(); } });
+
+    // Touch: decide tap-vs-swipe on THIS facade so the carousel can never eat
+    // a genuine tap. A tap fires play() straight from touchend (inside the user
+    // gesture) and we suppress the synthetic click so it can't double-fire.
+    let tx = 0, ty = 0, tMoved = false;
+    el.addEventListener('touchstart', e => {
+      if(e.touches.length !== 1){ tMoved = true; return; }
+      tx = e.touches[0].clientX; ty = e.touches[0].clientY; tMoved = false;
+    }, {passive:true});
+    el.addEventListener('touchmove', e => {
+      if(!e.touches.length) return;
+      if(Math.abs(e.touches[0].clientX - tx) > 12 || Math.abs(e.touches[0].clientY - ty) > 12) tMoved = true;
+    }, {passive:true});
+    el.addEventListener('touchend', e => {
+      if(tMoved) return;          // it was a swipe — let the carousel handle it
+      e.preventDefault();         // stop the synthetic click (no double-fire)
+      play();
+    }, {passive:false});
   });
 })();
 
 // ── Video carousel ──
-document.querySelectorAll('.video-carousel').forEach(car => {
+document.querySelectorAll('.video-carousel, .gallery-carousel').forEach(car => {
   const track = car.querySelector('.vc-track');
   const cards = [...track.children];
   const prev = car.querySelector('.vc-prev');
@@ -1664,8 +1703,10 @@ document.querySelectorAll('.video-carousel').forEach(car => {
     dotsWrap.style.display = maxIndex > 0 ? 'flex' : 'none';
     const showArrows = maxIndex > 0;
     prev.style.display = next.style.display = showArrows ? 'grid' : 'none';
-    // vertically center arrows on the video frame (not the caption)
-    const frame = cards[0].querySelector('.video-frame');
+    // vertically center arrows on the video frame (not the caption).
+    // Gallery arrows are centered purely in CSS (images load lazily, so their
+    // height is 0 at render time — JS centering would pin them to the top).
+    const frame = car.classList.contains('video-carousel') ? cards[0].querySelector('.video-frame') : null;
     if(frame){
       const carRect = car.getBoundingClientRect();
       const fRect = frame.getBoundingClientRect();
@@ -1695,7 +1736,10 @@ document.querySelectorAll('.video-carousel').forEach(car => {
     }
     if(decided && horizontal){
       e.preventDefault();
-      moved = true;
+      // Only count as a real swipe once the finger has travelled a meaningful
+      // distance — otherwise the tiny drift in a normal tap gets misread as a
+      // swipe and the capturing click handler eats the tap (play never fires).
+      if(Math.abs(dx) > 12) moved = true;
       const { cw, gap, maxIndex } = metrics();
       let d = dx;
       // rubber-band at the ends
