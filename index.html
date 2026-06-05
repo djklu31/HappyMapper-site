@@ -1483,7 +1483,7 @@ footer{
     <div class="footer-links">
     <a href="privacy-policy.html">Privacy Policy</a>
     <a href="terms.html">Terms of Use</a>
-    <a href="/cdn-cgi/l/email-protection#7f1b1514130a4c4e3f18121e1613511c1012">Support</a>
+    <a href="/cdn-cgi/l/email-protection#c7a3adacabb2f4f687a0aaa6aeabe9a4a8aa">Support</a>
   </div>
     <div class="footer-actions">
     <a href="https://www.instagram.com/happymapper.live" target="_blank" rel="noopener" class="footer-social" aria-label="Instagram">
@@ -1643,24 +1643,6 @@ window.addEventListener('resize', () => {
     };
     el.addEventListener('click', play);
     el.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); play(); } });
-
-    // Touch: decide tap-vs-swipe on THIS facade so the carousel can never eat
-    // a genuine tap. A tap fires play() straight from touchend (inside the user
-    // gesture) and we suppress the synthetic click so it can't double-fire.
-    let tx = 0, ty = 0, tMoved = false;
-    el.addEventListener('touchstart', e => {
-      if(e.touches.length !== 1){ tMoved = true; return; }
-      tx = e.touches[0].clientX; ty = e.touches[0].clientY; tMoved = false;
-    }, {passive:true});
-    el.addEventListener('touchmove', e => {
-      if(!e.touches.length) return;
-      if(Math.abs(e.touches[0].clientX - tx) > 12 || Math.abs(e.touches[0].clientY - ty) > 12) tMoved = true;
-    }, {passive:true});
-    el.addEventListener('touchend', e => {
-      if(tMoved) return;          // it was a swipe — let the carousel handle it
-      e.preventDefault();         // stop the synthetic click (no double-fire)
-      play();
-    }, {passive:false});
   });
 })();
 
