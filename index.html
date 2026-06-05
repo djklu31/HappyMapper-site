@@ -1483,7 +1483,7 @@ footer{
     <div class="footer-links">
     <a href="privacy-policy.html">Privacy Policy</a>
     <a href="terms.html">Terms of Use</a>
-    <a href="/cdn-cgi/l/email-protection#c7a3adacabb2f4f687a0aaa6aeabe9a4a8aa">Support</a>
+    <a href="/cdn-cgi/l/email-protection#71151b1a1d04424031161c10181d5f121e1c">Support</a>
   </div>
     <div class="footer-actions">
     <a href="https://www.instagram.com/happymapper.live" target="_blank" rel="noopener" class="footer-social" aria-label="Instagram">
@@ -1716,11 +1716,13 @@ document.querySelectorAll('.video-carousel, .gallery-carousel').forEach(car => {
       decided = true; horizontal = Math.abs(dx) > Math.abs(dy);
     }
     if(decided && horizontal){
-      e.preventDefault();
-      // Only count as a real swipe once the finger has travelled a meaningful
-      // distance — otherwise the tiny drift in a normal tap gets misread as a
-      // swipe and the capturing click handler eats the tap (play never fires).
+      // Don't preventDefault yet — on mobile, preventDefault on touchmove
+      // cancels the tap's click, so a tap with a few px of drift would never
+      // launch the video. Only commit to the swipe (and start dragging) once
+      // the finger clearly passes the tap threshold.
       if(Math.abs(dx) > 12) moved = true;
+      if(!moved) return;
+      e.preventDefault();
       const { cw, gap, maxIndex } = metrics();
       let d = dx;
       // rubber-band at the ends
