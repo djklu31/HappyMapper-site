@@ -1483,7 +1483,7 @@ footer{
     <div class="footer-links">
     <a href="privacy-policy.html">Privacy Policy</a>
     <a href="terms.html">Terms of Use</a>
-    <a href="/cdn-cgi/l/email-protection#c3a7a9a8afb6f0f283a4aea2aaafeda0acae">Support</a>
+    <a href="/cdn-cgi/l/email-protection#7f1b1514130a4c4e3f18121e1613511c1012">Support</a>
   </div>
     <div class="footer-actions">
     <a href="https://www.instagram.com/happymapper.live" target="_blank" rel="noopener" class="footer-social" aria-label="Instagram">
@@ -1628,8 +1628,11 @@ window.addEventListener('resize', () => {
       // Build the iframe synchronously inside the click/touch handler so the
       // user-gesture context is preserved — that's what lets YouTube autoplay
       // on a single click instead of showing its own play button.
+      // Touch devices block UNMUTED autoplay even on a gesture, so mute on
+      // mobile (one-tap play; viewer can unmute) while desktop keeps sound.
+      const isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
       const iframe = document.createElement('iframe');
-      iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&playsinline=1&rel=0&modestbranding=1`;
+      iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&playsinline=1&rel=0&modestbranding=1${isTouch ? '&mute=1' : ''}`;
       iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
       iframe.setAttribute('allowfullscreen', '');
       iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;';
