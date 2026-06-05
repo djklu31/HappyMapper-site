@@ -1483,7 +1483,7 @@ footer{
     <div class="footer-links">
     <a href="privacy-policy.html">Privacy Policy</a>
     <a href="terms.html">Terms of Use</a>
-    <a href="/cdn-cgi/l/email-protection#127678797e67212352757f737b7e3c717d7f">Support</a>
+    <a href="/cdn-cgi/l/email-protection#c3a7a9a8afb6f0f283a4aea2aaafeda0acae">Support</a>
   </div>
     <div class="footer-actions">
     <a href="https://www.instagram.com/happymapper.live" target="_blank" rel="noopener" class="footer-social" aria-label="Instagram">
@@ -1625,25 +1625,18 @@ window.addEventListener('resize', () => {
     const play = () => {
       if(launched) return;
       launched = true;
-      const mount = document.createElement('div');
+      // Build the iframe synchronously inside the click/touch handler so the
+      // user-gesture context is preserved — that's what lets YouTube autoplay
+      // on a single click instead of showing its own play button.
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&playsinline=1&rel=0&modestbranding=1`;
+      iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;';
       el.innerHTML = '';
-      el.appendChild(mount);
+      el.appendChild(iframe);
       el.classList.remove('yt-facade');
       el.style.cursor = 'default';
-      whenApiReady(() => {
-        new YT.Player(mount, {
-          videoId: id,
-          host: 'https://www.youtube.com',
-          playerVars: { autoplay: 1, mute: 1, playsinline: 1, rel: 0, modestbranding: 1, origin: location.origin },
-          events: { onReady: (e) => {
-            try {
-              e.target.playVideo();
-              // muted autoplay is allowed; unmute right after so sound comes on
-              setTimeout(() => { try { e.target.unMute(); e.target.setVolume(100); } catch(_){} }, 220);
-            } catch(_){}
-          } }
-        });
-      });
     };
     el.addEventListener('click', play);
     el.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); play(); } });
@@ -1722,6 +1715,9 @@ document.querySelectorAll('.video-carousel, .gallery-carousel').forEach(car => {
   // drag / swipe (follows the finger, snaps on release)
   let startX = 0, startY = 0, dragX = 0, dragging = false, decided = false, horizontal = false, moved = false;
   car.addEventListener('touchstart', e => {
+    // Taps that begin on the arrows or dots must stay clean clicks — don't let
+    // the drag logic engage (its preventDefault would suppress the click).
+    if(e.target.closest('.vc-arrow') || e.target.closest('.vc-dots')) return;
     if(e.touches.length !== 1) return;
     startX = e.touches[0].clientX; startY = e.touches[0].clientY;
     dragX = 0; dragging = true; decided = false; horizontal = false; moved = false;
