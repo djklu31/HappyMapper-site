@@ -446,7 +446,7 @@ nav{
 .feature-section{
   padding:100px 48px;
   display:grid;grid-template-columns:1fr 1fr;gap:80px;
-  align-items:center;max-width:1100px;margin:0 auto;
+  align-items:center;max-width:800px;margin:0 auto;
 }
 .feature-section.reverse{direction:rtl;}
 .feature-section.reverse > *{direction:ltr;}
@@ -592,7 +592,7 @@ nav{
   text-shadow:2px 3px 0 rgba(100,40,0,.2);
 }
 .pricing-section > p{color:var(--muted);margin-bottom:56px;font-weight:300;}
-.pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;text-align:left;}
+.pricing-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;text-align:left;max-width:640px;margin:0 auto;}
 
 .price-tier{
   font-size:10px;font-weight:600;letter-spacing:2px;
@@ -1366,26 +1366,14 @@ footer{
       <div class="price-note">One shape. Every feature unlocked.</div>
       <p style="font-size:14px;color:var(--muted);font-weight:300;line-height:1.6;">Full access to media search, curves, cutout, export, and everything else. One shape, no time limit.</p>
     </div>
-    <div class="price-card monthly reveal" style="transition-delay:.1s;">
-      <div class="price-tier">Monthly</div>
-      <div class="price-amount">$2<span>.99/mo</span></div>
-      <div class="price-note">3-day free trial included.</div>
-      <p style="font-size:14px;color:var(--muted);font-weight:300;line-height:1.6;">Unlimited shapes. Map entire rooms, layer surfaces, build complex installations.</p>
-    </div>
-    <div class="price-card yearly reveal" style="transition-delay:.2s;">
+    <div class="price-card featured reveal" style="transition-delay:.1s;">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;">
-        <div class="price-tier" style="margin-bottom:0;">Yearly</div>
-        <div class="yearly-badge" style="margin-bottom:0;position:relative;top:-6px;">30% off</div>
+        <div class="price-tier" style="margin-bottom:0;">Lifetime</div>
+        <div class="yearly-badge" style="margin-bottom:0;position:relative;top:-6px;">Launch pricing</div>
       </div>
-      <div class="price-amount">$24<span>.99/yr</span></div>
-      <div class="price-note">3-day free trial included.</div>
-      <p style="font-size:14px;color:var(--muted);font-weight:300;line-height:1.6;">Unlimited shapes all year. Save versus monthly.</p>
-    </div>
-    <div class="price-card featured reveal" style="transition-delay:.3s;">
-      <div class="price-tier">Lifetime</div>
-      <div class="price-amount">$49<span>.99</span></div>
+      <div class="price-amount">$14<span>.99</span></div>
       <div class="price-note">One-time. Yours forever.</div>
-      <p style="font-size:14px;color:var(--muted);font-weight:300;line-height:1.6;">Pay once and own it.</p>
+      <p style="font-size:14px;color:var(--muted);font-weight:300;line-height:1.6;">Unlimited shapes. Pay once and own it.</p>
     </div>
   </div>
 </section>
